@@ -6,7 +6,7 @@ import {
   signOut as firebaseSignOut,
 } from 'firebase/auth';
 
-import { app } from './app';
+import { app } from './firebase-app';
 
 const auth = getAuth(app);
 
@@ -45,6 +45,14 @@ export const checkAuthState = () => {
 };
 
 export const redirectAnonymousUser = () => {
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location = '/';
+    }
+  });
+};
+
+export const redirectLoggedUser = () => {
   onAuthStateChanged(auth, (user) => {
     if (!user) {
       window.location = '/';
