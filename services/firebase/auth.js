@@ -18,7 +18,7 @@ export const signUp = async (email, password) => {
       password,
     );
 
-    console.log(user);
+    return user;
   } catch (error) {
     console.error(error);
   }
@@ -29,6 +29,15 @@ export const signIn = async (email, password) => {
     const { user } = await signInWithEmailAndPassword(auth, email, password);
 
     console.log(user);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const signOut = async () => {
+  try {
+    await firebaseSignOut(auth);
+    console.log('user signed out');
   } catch (error) {
     console.error(error);
   }
@@ -58,13 +67,4 @@ export const redirectLoggedUser = () => {
       window.location = '/';
     }
   });
-};
-
-export const signOut = async () => {
-  try {
-    await firebaseSignOut(auth);
-    console.log('user signed out');
-  } catch (error) {
-    console.error(error);
-  }
 };

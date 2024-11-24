@@ -1,47 +1,56 @@
-import { firebaseService } from './services';
+import { notification } from './services';
+import { firebaseService } from './services/firebase';
 
-// TEMP CODE
-window.email = 'teste5@teste.com';
-window.password = 'senha123';
-window.signIn = firebaseService.auth.signIn;
-window.signOut = firebaseService.auth.signOut;
+firebaseService.auth.checkAuthState();
 
-const getPostList = async () => {
-  try {
-    const requestInfo = await fetch(
-      'https://jsonplaceholder.typicode.com/posts',
-    );
-    const data = await requestInfo.json();
+document.querySelector('#signout-button')?.addEventListener('click', () => {
+  firebaseService.auth.signOut();
+});
 
-    return data;
-  } catch (error) {
-    console.error(error);
+document.querySelector('#login-form')?.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const email = event.target.email.value;
+  const password = event.target.password.value;
+
+  if(!email.length) {
+    notification.error('Email is mandatory');
+    return;
   }
-};
 
-const getPost = async (id) => {
-  try {
-    const requestInfo = await fetch(
-      `https://jsonplaceholder.typicode.com/posts/${id}`,
-    );
-    const data = await requestInfo.json();
-
-    return data;
-  } catch (error) {
-    console.error(error);
+  if(!password.length) {
+    notification.error('Password is mandatory');
+    return;
   }
-};
 
-(async () => {
-  await firebaseService.auth.checkAuthState();
+  firebaseService.auth.signIn(email, password);
+});
 
-  try {
-    const posts = await getPostList();
-    console.log(posts);
+document.querySelector('#add-user-form')?.addEventListener('submit', (event) => {
+  event.preventDefault();
 
-    const post = await getPost(2);
-    console.log(post);
-  } catch (error) {
-    console.error(error);
+  const name = event.target.name.value;
+  const email = event.target.email.value;
+  const password = event.target.password.value;
+
+  if(!name.length) {
+    notification.error('Name is mandatory');
+    return;
   }
-})();
+
+  if(!email.length) {
+    notification.error('Email is mandatory');
+    return;
+  }
+
+  if(!password.length) {
+    notification.error('Password is mandatory');
+    return;
+  }
+
+  firebaseService.user.addUser({
+    name,
+    email, 
+    password,
+  });
+});
